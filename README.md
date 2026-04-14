@@ -102,7 +102,7 @@ Authorization: Bearer <access_token>
 ## 1) Install dependencies
 
 ```bash
-pip install fastapi uvicorn sqlalchemy pydantic msgspec
+pip install -r requirements.txt
 ```
 
 ## 2) Optional environment variables
