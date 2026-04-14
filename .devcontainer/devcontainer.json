@@ -1,0 +1,17 @@
+{
+  "name": "SFF Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/python:3.11",
+  "remoteEnv": {
+    "JWT_SECRET": "${localEnv:JWT_SECRET}",
+    "USER_CREATION_TOKEN": "${localEnv:USER_CREATION_TOKEN}",
+    "JWT_EXPIRE_MINUTES": "${localEnv:JWT_EXPIRE_MINUTES}"
+  },
+  "postCreateCommand": "pip install -r requirements.txt",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python"
+      ]
+    }
+  }
+}

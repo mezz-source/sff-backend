@@ -18,7 +18,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/users/login")
 def _get_secret_key() -> str:
 	secret_key = os.getenv("JWT_SECRET")
 	if not secret_key:
-		raise RuntimeError("JWT_SECRET is not configured. Set it in the .env file.")
+		raise RuntimeError("JWT_SECRET is not configured.")
 	return secret_key
 
 

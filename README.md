@@ -70,7 +70,7 @@ Example error:
 
 ## Authentication Flow
 
-1. Register a user with POST /api/users/
+1. Register a user with POST /api/users/ and header X-User-Creation-Token
 2. Login with POST /api/users/login to receive access_token
 3. Send token in Authorization header:
 
@@ -84,7 +84,7 @@ Authorization: Bearer <access_token>
 
 ### Users
 
-- POST /api/users/ (public): create account
+- POST /api/users/ (requires X-User-Creation-Token): create account
 - POST /api/users/login (public): login and receive bearer token
 - GET /api/users/{user_id} (auth): get own user
 - PATCH /api/users/{user_id} (auth): modify own user
@@ -105,26 +105,35 @@ Authorization: Bearer <access_token>
 pip install -r requirements.txt
 ```
 
-## 2) Optional environment variables
+## 2) Required environment variables
+
+- JWT_SECRET
+- USER_CREATION_TOKEN
+
+## 3) Optional environment variables
 
 - DATABASE_URL (default: sqlite:///./sff.db)
-- JWT_SECRET (default: change-me-in-production)
 - JWT_EXPIRE_MINUTES (default: 60)
+
+Codespaces note:
+- Store JWT_SECRET and USER_CREATION_TOKEN as Codespaces secrets.
+- They are exposed as environment variables at runtime, so no dotenv file is required.
 
 PowerShell example:
 
 ```powershell
 $env:JWT_SECRET = "super-secret-value"
-$env:JWT_EXPIRE_MINUTES = "120"aiohappyeyeballs==2.6.1
+$env:USER_CREATION_TOKEN = "long-random-create-token"
+$env:JWT_EXPIRE_MINUTES = "120"
 ```
 
-## 3) Run the API
+## 4) Run the API
 
 ```bash
 uvicorn src.main:app --reload
 ```
 
-## 4) Open docs
+## 5) Open docs
 
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
@@ -135,6 +144,7 @@ Create user:
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/users/ \
+  -H "X-User-Creation-Token: YOUR_CREATE_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"username":"camey","password":"securePass123"}'
 ```

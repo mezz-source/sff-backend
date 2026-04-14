@@ -11,6 +11,7 @@ from src.schemas.core.user_core import (
     ModifyUser as ModifyUserCore,
 )
 from src.schemas.user_scheme import CreateUser, LoginUser, ModifyUser
+from src.security.access import require_user_creation_token
 from src.security.jwt import get_current_user
 from src.services.user_service import UserService
 from src.util.response import handle_request
@@ -32,7 +33,11 @@ async def get_user(user_id: int, db: Session = Depends(get_db), current_user: Us
 
 
 @router.post("/")
-async def create_user(user: CreateUser, db: Session = Depends(get_db)):
+async def create_user(
+    user: CreateUser,
+    db: Session = Depends(get_db),
+    _: None = Depends(require_user_creation_token),
+):
     service = UserService(db)
     return await handle_request(
         "result",
