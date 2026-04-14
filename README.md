@@ -115,7 +115,7 @@ PowerShell example:
 
 ```powershell
 $env:JWT_SECRET = "super-secret-value"
-$env:JWT_EXPIRE_MINUTES = "120"
+$env:JWT_EXPIRE_MINUTES = "120"aiohappyeyeballs==2.6.1
 ```
 
 ## 3) Run the API
