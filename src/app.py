@@ -4,10 +4,12 @@ from src.api.routers.log_router import router as logs_router
 from src.api.routers.user_router import router as users_router
 from src.db.session import init_db
 from src.security.runtime_config import validate_runtime_config
+# from dotenv import load_dotenv
 
 def create_app() -> FastAPI:
     app = FastAPI(title="SFF Bot API")
     validate_runtime_config()
+    # load_dotenv()
     init_db()
 
     app.include_router(users_router, prefix="/api")
