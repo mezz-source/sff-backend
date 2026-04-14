@@ -54,9 +54,9 @@ async def handle_request(request_head: str | None, current_user: dict | None, ta
     try:
         if targetClass:
             request = targetClass(**kwargs)
-            result = await targetServiceFunction(request, acting_user=current_user) if current_user else await targetServiceFunction(request)
+            result = await targetServiceFunction(request)
         else:
-            result = await targetServiceFunction(**kwargs, acting_user=current_user) if current_user else await targetServiceFunction(**kwargs)
+            result = await targetServiceFunction(**kwargs)
     except Exception as exc:
         print("Error:", str(exc))
         return await error_response("REQUEST_FAILED", str(exc), status_code=500)

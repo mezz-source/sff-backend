@@ -11,6 +11,7 @@ from src.schemas.core.user_core import (
 )
 from src.security.hash import hash_password, verify_password
 from src.security.jwt import create_access_token
+from datetime import timedelta
 
 
 class UserService:
@@ -39,7 +40,7 @@ class UserService:
 		if not user or not verify_password(request.password, user.password_hash):
 			return Error(response_code=401, status="UNAUTHORIZED", detail="Invalid username or password")
 
-		token = create_access_token(user.id)
+		token = create_access_token(user.id, expires_delta=timedelta(days=30))
 		return Response(
 			response_code=200,
 			status="SUCCESS",
