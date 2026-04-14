@@ -13,7 +13,7 @@ from src.security.runtime_config import validate_runtime_config
 def create_app() -> FastAPI:
     app = FastAPI(title="SFF Bot API")
     app.state.limiter = limiter
-    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler) # type: ignore
     validate_runtime_config()
     # load_dotenv()
     init_db()

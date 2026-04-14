@@ -1,6 +1,5 @@
 from src.repo.log_repo import LogRepository
 from src.repo.user_repo import UserRepository
-from datetime import UTC
 from src.schemas.core.log_core import (
 	CreateLog,
 	GetLog,
@@ -84,8 +83,8 @@ class LogService:
 					detail="created_at must include a timezone offset",
 				)
 
-			# Persist as UTC-naive to match existing DB column behavior.
-			created_at_override = request.created_at.astimezone(UTC).replace(tzinfo=None)
+			# Preserve client wall-clock timestamp for explicit overrides.
+			created_at_override = request.created_at.replace(tzinfo=None)
 
 		created = self.repo.create_log(
 			user_id=request.acting_user_id,

@@ -179,7 +179,7 @@ curl -X POST http://127.0.0.1:8000/api/logs/ \
 Notes for `created_at` override:
 - Field is optional.
 - Must include a timezone offset (for example `Z` or `-05:00`).
-- Server normalizes it to UTC for storage.
+- Server preserves the submitted wall-clock timestamp when an override is provided.
 
 Subscribe to realtime log events via WebSocket:
 
