@@ -1,6 +1,14 @@
 from src.repo.log_repo import LogRepository
 from src.repo.user_repo import UserRepository
-from src.schemas.core.log_core import CreateLog, GetLog, ListLogs, LogData, ModifyLog
+from src.schemas.core.log_core import (
+	CreateLog,
+	GetLog,
+	ListLogs,
+	LogData,
+	ModifyLog,
+	PaginatedLogsData,
+	Pagination,
+)
 from src.schemas.core.reponse_scheme import Error, Response
 
 
@@ -10,7 +18,13 @@ class LogService:
 		self.user_repo = UserRepository(db)
 
 	async def list_logs(self, request: ListLogs) -> Error | Response:
-		rows = self.repo.list_by_user_id(request.acting_user_id)
+		if request.user_id is not None:
+			rows = self.repo.list_by_user_id(request.user_id, request.offset, request.limit)
+			total = self.repo.count_by_user_id(request.user_id)
+		else:
+			rows = self.repo.list_all(request.offset, request.limit)
+			total = self.repo.count_all()
+
 		result = [
 			LogData(
 				id=row.id,
@@ -21,14 +35,26 @@ class LogService:
 			)
 			for row in rows
 		]
-		return Response(response_code=200, status="SUCCESS", detail="Logs retrieved successfully", result=result)
+
+		return Response(
+			response_code=200,
+			status="SUCCESS",
+			detail="Logs retrieved successfully",
+			result=PaginatedLogsData(
+				items=result,
+				pagination=Pagination(
+					offset=request.offset,
+					limit=request.limit,
+					total=total,
+					has_more=(request.offset + len(rows)) < total,
+				),
+			),
+		)
 
 	async def get_log(self, request: GetLog) -> Error | Response:
 		log = self.repo.get_by_id(request.log_id)
 		if not log:
 			return Error(response_code=404, status="NOT_FOUND", detail="Log not found")
-		if log.user_id != request.acting_user_id:
-			return Error(response_code=403, status="FORBIDDEN", detail="Cannot access this log")
 
 		return Response(
 			response_code=200,

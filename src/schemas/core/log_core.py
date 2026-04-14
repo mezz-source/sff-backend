@@ -21,6 +21,16 @@ class ModifyLog(Struct):
 
 class ListLogs(Struct):
 	acting_user_id: int
+	user_id: int | None = None
+	offset: int = 0
+	limit: int = 10
+
+
+class Pagination(Struct):
+	offset: int
+	limit: int
+	total: int
+	has_more: bool
 
 
 class LogData(Struct):
@@ -29,3 +39,8 @@ class LogData(Struct):
 	username: str
 	message: str
 	created_at: datetime
+
+
+class PaginatedLogsData(Struct):
+	items: list[LogData]
+	pagination: Pagination

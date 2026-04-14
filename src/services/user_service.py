@@ -4,8 +4,11 @@ from src.schemas.core.user_core import (
 	CreateUser,
 	DeleteUser,
 	GetUser,
+	ListUsers,
 	LoginUser,
 	ModifyUser,
+	PaginatedUsersData,
+	Pagination,
 	TokenData,
 	UserData,
 )
@@ -49,9 +52,6 @@ class UserService:
 		)
 
 	async def get_user(self, request: GetUser) -> Error | Response:
-		if request.user_id != request.acting_user_id:
-			return Error(response_code=403, status="FORBIDDEN", detail="Cannot access this user")
-
 		user = self.repo.get_by_id(request.user_id)
 		if not user:
 			return Error(response_code=404, status="NOT_FOUND", detail="User not found")
@@ -61,6 +61,29 @@ class UserService:
 			status="SUCCESS",
 			detail="User retrieved successfully",
 			result=UserData(id=user.id, username=user.username, created_at=user.created_at),
+		)
+
+	async def list_users(self, request: ListUsers) -> Error | Response:
+		rows = self.repo.list_users(request.offset, request.limit)
+		total = self.repo.count_users()
+		result = [
+			UserData(id=row.id, username=row.username, created_at=row.created_at)
+			for row in rows
+		]
+
+		return Response(
+			response_code=200,
+			status="SUCCESS",
+			detail="Users retrieved successfully",
+			result=PaginatedUsersData(
+				items=result,
+				pagination=Pagination(
+					offset=request.offset,
+					limit=request.limit,
+					total=total,
+					has_more=(request.offset + len(rows)) < total,
+				),
+			),
 		)
 
 	async def modify_user(self, request: ModifyUser) -> Error | Response:

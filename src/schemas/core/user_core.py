@@ -30,10 +30,28 @@ class DeleteUser(Struct):
 	acting_user_id: int
 
 
+class ListUsers(Struct):
+	acting_user_id: int
+	offset: int = 0
+	limit: int = 10
+
+
+class Pagination(Struct):
+	offset: int
+	limit: int
+	total: int
+	has_more: bool
+
+
 class UserData(Struct):
 	id: int
 	username: str
 	created_at: datetime
+
+
+class PaginatedUsersData(Struct):
+	items: list[UserData]
+	pagination: Pagination
 
 
 class TokenData(Struct):

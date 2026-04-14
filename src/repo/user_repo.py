@@ -12,6 +12,22 @@ class UserRepository():
 
         return self.db.query(User).filter(User.username == username).first()
 
+    def list_users(self, offset: int = 0, limit: int = 10):
+        from src.models.user_model import User
+
+        return (
+            self.db.query(User)
+            .order_by(User.created_at.desc())
+            .offset(offset)
+            .limit(limit)
+            .all()
+        )
+
+    def count_users(self) -> int:
+        from src.models.user_model import User
+
+        return self.db.query(User).count()
+
     def create_user(self, username: str, password_hash: str):
         from src.models.user_model import User
 
