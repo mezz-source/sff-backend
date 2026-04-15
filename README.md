@@ -1,4 +1,4 @@
-# SFF Bot Backend
+# SFF Backend
 
 A FastAPI backend for user accounts and text logs
 this was specifically made for a roblox game i was working on where I wanted our developers to post logs from a studio plugin!
